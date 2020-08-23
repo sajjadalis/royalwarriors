@@ -1,0 +1,45 @@
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+.tabulator-cell[tabulator-field="Name"] {
+    font-weight: 700;
+}
+.tabulator-cell[tabulator-field="Lvl 2"] {
+    background-color: #f1f5f8;
+}
+.tabulator-footer .tabulator-cell[tabulator-field="Score"]:before {
+    content: "Avg. "
+}
+.tabulator .tabulator-header, .tabulator .tabulator-header .tabulator-col {
+    background-color: #000;
+    color: #fff;
+}
+.tabulator .tabulator-header .tabulator-col.tabulator-sortable:hover {
+    background-color: #333;
+}
+.tabulator .tabulator-footer .tabulator-page {
+    background: hsla(0,0%,100%,.2)!important;
+    color: #444!important;
+}
+.tabulator .tabulator-footer .tabulator-page:hover {
+    background-color: #444!important;
+    color: #fff!important;
+}
+.tabulator-tableHolder::-webkit-scrollbar {
+    width: 7px;
+    background: #e2e8f0;
+}
+    /* Handle */
+.tabulator-tableHolder::-webkit-scrollbar-thumb {
+    background: #aaacaf; 
+}
+    /* Handle on hover */
+.tabulator-tableHolder::-webkit-scrollbar-thumb:hover {
+    background: #3c3c3c; 
+}
+.tabulator .tabulator-tableHolder {
+    overflow-x: hidden;
+}
