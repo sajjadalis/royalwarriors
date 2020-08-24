@@ -1,16 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Cuprum:wght@400;700&family=Ubuntu:wght@400;500;700&display=swap');
+
 @tailwind base;
 
 @tailwind components;
 
 @tailwind utilities;
 
-.tabulator-cell[tabulator-field="Name"] {
-    font-weight: 700;
+@media only screen and (max-width: 540px) {
+    .tabulator-cell, .tabulator-col-title, .tabulator-row .tabulator-responsive-collapse table {
+        font-size: 12px;
+    }
 }
-.tabulator-cell[tabulator-field="Lvl 2"] {
+.tabulator-cell[tabulator-field="name"] {
+    @apply font-bold;
+}
+.tabulator-cell[tabulator-field="lvl2"], .tabulator-row.tabulator-selectable:hover {
     background-color: #f1f5f8;
 }
-.tabulator-footer .tabulator-cell[tabulator-field="Score"]:before {
+.tabulator-footer .tabulator-cell[tabulator-field="score"]:before {
     content: "Avg. "
 }
 .tabulator .tabulator-header, .tabulator .tabulator-header .tabulator-col {

@@ -1,7 +1,12 @@
 module.exports = {
   purge: [],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        heading: ['Cuprum'],
+        sans: ['Ubuntu']
+      }
+    },
   },
   variants: {},
   plugins: [],
