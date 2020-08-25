@@ -3,32 +3,32 @@
 
         <div class="relative">
             <img src="assets/header2.jpg" class="w-full h-auto mb-5 md:mb-10 rounded-b-lg">
-            <h1 class="absolute top-0 left-0 font-heading font-bold text-xs md:text-3xl text-white mb-5 md:mb-10 leading-tight py-1 px-2 md:py-5 md:px-10 mt-2 md:mt-12 bg-black bg-opacity-75">The Royal Warriors Hunting Report</h1>
+            <h1 class="absolute top-0 left-0 font-heading font-bold text-xs md:text-3xl text-white mb-5 md:mb-10 leading-tight py-1 px-2 md:py-5 md:px-10 mt-2 md:mt-12 bg-black bg-opacity-75">The Royal Warriors Hunting Report for {{ today }}</h1>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-5 md:gap-10">
 
             <div class="mt-10 md:mt-0 md:col-span-2 row-start-2 md:row-start-1">
 
-                <div id="canvas-holder" class="w-full p-5 shadow-xl rounded-lg">
-                    <h2 class="text-center mb-3 text-xl">Today's Hunting Ratio</h2>
+                <div class="w-full p-3 md:p-10 shadow-xl rounded-lg">
+                    <select class="w-full border border-gray-300 py-2 px-4" @change="redirectPage($event)">
+                        <option>Select a Date</option>
+                        <option v-for="(file, index) in files" :key="index" :value="file">{{ file }}</option>
+                    </select>
+                </div>
+
+                <div class="w-full p-3 md:p-10 shadow-xl rounded-lg mt-10">
+                    <h2 class="text-center mb-3 text-2xl font-heading font-bold">Today's Hunting Ratio</h2>
                     <canvas id="compareChart"></canvas>
                 </div>
 
-                <div id="canvas-holder" class="w-full p-5 shadow-xl rounded-lg mt-10">
-                    <h2 class="text-center mb-3 text-xl">Hunting Progress Comparison</h2>
+                <div class="w-full p-3 md:p-10 md:p-10 shadow-xl rounded-lg mt-10">
+                    <h2 class="text-center mb-3 text-2xl font-heading font-bold">Hunting Kills History</h2>
                     <canvas id="dailyChart"></canvas>
                 </div>
 
-                <!-- <div id="canvas-holder" class="w-full p-5 shadow-xl rounded-lg mt-10">
-                    <canvas id="lvl2Chart"></canvas>
-                </div>
-
-                <div id="canvas-holder" class="w-full p-5 shadow-xl rounded-lg mt-10">
-                    <canvas id="lvl3Chart"></canvas>
-                </div> -->
-
-                <div id="canvas-holder" class="w-full p-5 shadow-xl rounded-lg mt-10">
+                <div class="w-full p-3 md:p-10 shadow-xl rounded-lg mt-10">
+                    <h2 class="text-center mb-3 text-2xl font-heading font-bold">Hunting Score History</h2>
                     <canvas id="scoreChart"></canvas>
                 </div>
 
@@ -63,19 +63,19 @@
                     <p>We're having issues with retrieving data. Please try again in few moments</p>
                 </div>
 
-                <div v-if="zeroKill" class="w-full p-5 shadow-xl rounded-lg mt-10">
+                <div v-if="zeroKill" class="w-full p-3 md:p-10 shadow-xl rounded-lg mt-10">
                     <h2 class="text-center mb-3 text-2xl font-heading font-bold">{{ zeroKill.length }} Players with Zero Kill 🤦‍♂️</h2>
                     <ul>
-                        <li v-for="(player, index) in zeroKill" :key="index" class="inline-block border border-gray-200 mr-2 p-2 mt-2 hover:bg-gray-100">
+                        <li v-for="(player, index) in zeroKill" :key="index" class="inline-block border border-gray-200 mr-2 p-2 mt-2 rounded-md hover:bg-gray-100">
                             {{ player.name }}
                         </li>
                     </ul>
                 </div>
 
-                <div v-if="oneKill" class="w-full p-5 shadow-xl rounded-lg mt-10">
+                <div v-if="oneKill" class="w-full p-3 md:p-10 shadow-xl rounded-lg mt-10">
                     <h2 class="text-center mb-3 text-2xl font-heading font-bold">{{ oneKill.length }} Players with One Kill (Lvl 2) 😔</h2>
                     <ul>
-                        <li v-for="(player, index) in oneKill" :key="index" class="inline-block border border-gray-200 mr-2 p-2 mt-2 hover:bg-gray-100">
+                        <li v-for="(player, index) in oneKill" :key="index" class="inline-block border border-gray-200 mr-2 p-2 mt-2 rounded-md hover:bg-gray-100">
                             {{ player.name }}
                         </li>
                     </ul>
@@ -92,6 +92,8 @@ export default {
     data() {
         return {
             loading: false,
+            files: '',
+            today: '',
             leader: '',
             zeroKill: '',
             oneKill: '',
@@ -126,6 +128,18 @@ export default {
         this.autoNumFormatter = function(){
             return document.getElementsByClassName("tabulator-row").length + 1;
         }
+
+        // Get files from History folder
+        const files = require.context(
+        '@/data/history',
+        true,
+        /^.*\.csv$/
+        )
+
+        this.files = files.keys().map( (file) => {
+            return file.substring(2, file.length - 4);
+        })
+        //console.log(this.files)
     },
     methods: {
         score(value, data, type, params, component){
@@ -142,6 +156,8 @@ export default {
                     
                     this.tabledata = results.data;
 
+                    this.today = moment(results.data[0].date).format('DD MMMM YYYY');
+
                     this.leader = results.data.reduce((a, c) => a.lvl2 > c.lvl2 ? a : c);
 
                     this.zeroKill = results.data.filter( (val) => {
@@ -151,7 +167,7 @@ export default {
                     this.oneKill = results.data.filter( (val) => {
                         return val.lvl2 === 1 && val.lvl3 === 0
                     });
-                    console.log(this.oneKill)
+                    //console.log(this.oneKill)
 
                     let lvl2Monsters = this.sum(results.data, 'lvl2');
                     let lvl3Monsters = this.sum(results.data, 'lvl3');
@@ -203,7 +219,6 @@ export default {
                         }
                     }
 
-
                     let lvl2 = data.map((doc) =>  doc.lvl2 );
                     let lvl3 = data.map((doc) =>  doc.lvl3 );
 
@@ -233,42 +248,6 @@ export default {
                         options: options
                     });
 
-                    // Level 2 Hunting CHART //
-                    // let lvl2 = data.map((doc) =>  doc.lvl2 );;
-                    // let lvl2Chart = {
-                    //     labels: chartLabels,
-                    //     stepSize: 0.5,
-                    //     datasets: [{
-                    //         label: 'Daily Level 2 Hunting Progress',
-                    //         data: lvl2,
-                    //         backgroundColor: 'rgb(50, 173, 142)',
-                    //     }],
-                    // };
-
-                    // let lvl2Container = document.getElementById('lvl2Chart');
-                    // new Chart(lvl2Container, {
-                    //     type: 'bar',
-                    //     data: lvl2Chart,
-                    //     options: options
-                    // });
-
-                    // Level 3 Hunting CHART //
-                    
-                    // let lvl3Chart = {
-                    //     labels: chartLabels,
-                    //     datasets: [{
-                    //         label: 'Daily Level 3 Hunting Progress',
-                    //         data: lvl3,
-                    //         backgroundColor: 'rgb(0, 141, 229)',
-                    //     }],
-                    // };
-                    // let lvl3Container = document.getElementById('lvl3Chart');
-                    // new Chart(lvl3Container, {
-                    //         type: 'bar',
-                    //         data: lvl3Chart,
-                    //         options: options
-                    // });
-
                      // SCORE CHART //
                     let score = data.map((doc) =>  doc.score );;
                     let chartScore = {
@@ -294,6 +273,9 @@ export default {
             {
                 return a + b[prop];
             }, 0);
+        },
+        redirectPage(event) {
+            window.location.href = '/report/'+event.target.value;
         }
     },
     computed: {
