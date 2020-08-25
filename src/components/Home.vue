@@ -10,24 +10,25 @@
 
             <div class="mt-10 md:mt-0 md:col-span-2 row-start-2 md:row-start-1">
 
-                <div id="canvas-holder" class="w-full p-5 border border-gray-200 shadow-xl rounded-lg">
-                    <p class="text-center mb-3">Today's Hunting comparison between Level 2 & Level 3 Monsters</p>
+                <div id="canvas-holder" class="w-full p-5 shadow-xl rounded-lg">
+                    <h2 class="text-center mb-3 text-xl">Today's Hunting Ratio</h2>
                     <canvas id="compareChart"></canvas>
                 </div>
 
-                <div id="canvas-holder" class="w-full p-5 border border-gray-200 shadow-xl rounded-lg mt-10">
+                <div id="canvas-holder" class="w-full p-5 shadow-xl rounded-lg mt-10">
+                    <h2 class="text-center mb-3 text-xl">Hunting Progress Comparison</h2>
                     <canvas id="dailyChart"></canvas>
                 </div>
 
-                <!-- <div id="canvas-holder" class="w-full p-5 border border-gray-200 shadow-xl rounded-lg mt-10">
+                <!-- <div id="canvas-holder" class="w-full p-5 shadow-xl rounded-lg mt-10">
                     <canvas id="lvl2Chart"></canvas>
                 </div>
 
-                <div id="canvas-holder" class="w-full p-5 border border-gray-200 shadow-xl rounded-lg mt-10">
+                <div id="canvas-holder" class="w-full p-5 shadow-xl rounded-lg mt-10">
                     <canvas id="lvl3Chart"></canvas>
                 </div> -->
 
-                <div id="canvas-holder" class="w-full p-5 border border-gray-200 shadow-xl rounded-lg mt-10">
+                <div id="canvas-holder" class="w-full p-5 shadow-xl rounded-lg mt-10">
                     <canvas id="scoreChart"></canvas>
                 </div>
 
@@ -35,7 +36,7 @@
             
             <div class="md:col-span-3">
 
-                <div class="w-full font-heading text-sm md:text-2xl p-5 border border-gray-200 shadow-xl rounded-lg text-center">
+                <div class="w-full font-heading text-sm md:text-2xl p-5 shadow-xl rounded-lg text-center">
                     <div class="flex items-center justify-center">
                         <img src="assets/crown.svg" class="w-5 h-5 mr-2 md:w-6 md:h-6 md:mr-3 text-yellow-500" />
                         <h2 class="font-bold mr-3">
@@ -50,7 +51,7 @@
                     </div>
                 </div>
 
-                <div v-if="tabledata" class="w-full p-3 border border-gray-200 shadow-xl rounded-lg  mt-10">
+                <div v-if="tabledata" class="w-full p-3 md:p-10 shadow-xl rounded-lg  mt-10">
                     <div>
                         <input class="w-full border border-gray-400 px-4 py-2 mb-2" type="text" v-model="search" placeholder="Filter Data by Player Name">
                     </div>
@@ -60,6 +61,24 @@
                 <div v-else>
                     <h1>Error</h1>
                     <p>We're having issues with retrieving data. Please try again in few moments</p>
+                </div>
+
+                <div v-if="zeroKill" class="w-full p-5 shadow-xl rounded-lg mt-10">
+                    <h2 class="text-center mb-3 text-2xl font-heading font-bold">{{ zeroKill.length }} Players with Zero Kill 🤦‍♂️</h2>
+                    <ul>
+                        <li v-for="(player, index) in zeroKill" :key="index" class="inline-block border border-gray-200 mr-2 p-2 mt-2 hover:bg-gray-100">
+                            {{ player.name }}
+                        </li>
+                    </ul>
+                </div>
+
+                <div v-if="oneKill" class="w-full p-5 shadow-xl rounded-lg mt-10">
+                    <h2 class="text-center mb-3 text-2xl font-heading font-bold">{{ oneKill.length }} Players with One Kill (Lvl 2) 😔</h2>
+                    <ul>
+                        <li v-for="(player, index) in oneKill" :key="index" class="inline-block border border-gray-200 mr-2 p-2 mt-2 hover:bg-gray-100">
+                            {{ player.name }}
+                        </li>
+                    </ul>
                 </div>
 
             </div>
@@ -74,6 +93,8 @@ export default {
         return {
             loading: false,
             leader: '',
+            zeroKill: '',
+            oneKill: '',
             tabledata: [],
             autoNumFormatter: null,
             search: '',
@@ -85,14 +106,14 @@ export default {
                 height: '580',
                  resizableColumns: 'header',
                 initialSort : [
-                    { column: "lvl2", dir: "desc" }
+                    { column: "score", dir: "desc" }
                 ],
                 columns: [
                     {title:"S#", formatter:"rownum", width:70, align:"center", responsive:3},
                     {title:"Player Name", field:"name", minWidth:150},
                     {title:"Lvl 2", field:"lvl2", sorter:"number", align:"center", formatter:"money", formatterParams:{precision:false}, bottomCalc:"sum", minWidth:80},
                     {title:"Lvl 3", field:"lvl3", sorter:"number", align:"center", formatter:"money", formatterParams:{precision:false}, bottomCalc:"sum", minWidth:80},
-                    {title:"Score", field:"score", sorter:"number", align:"center", formatterParams:{precision:true}, bottomCalc:"avg"}
+                    {title:"Score", field:"score", sorter:"number", align:"center", mutator:this.score, bottomCalc:"avg"},
                 ]
             }
         }
@@ -107,8 +128,11 @@ export default {
         }
     },
     methods: {
+        score(value, data, type, params, component){
+            return data.lvl2 * 5 + data.lvl3 * 20; //return the sum of the other two columns.
+        },
         playersTable() {
-            let monsters = "http://localhost:8080/data/todayStats.csv";
+            let monsters = "data/todayStats.csv";
             this.$papa.parse(monsters, {
                 header: true,
                 download: true,
@@ -118,7 +142,16 @@ export default {
                     
                     this.tabledata = results.data;
 
-                    this.leader = results.data.reduce((p, c) => p.lvl2 > c.lvl2 ? p : c);
+                    this.leader = results.data.reduce((a, c) => a.lvl2 > c.lvl2 ? a : c);
+
+                    this.zeroKill = results.data.filter( (val) => {
+                        return val.lvl2 === 0 && val.lvl3 === 0
+                    });
+
+                    this.oneKill = results.data.filter( (val) => {
+                        return val.lvl2 === 1 && val.lvl3 === 0
+                    });
+                    console.log(this.oneKill)
 
                     let lvl2Monsters = this.sum(results.data, 'lvl2');
                     let lvl3Monsters = this.sum(results.data, 'lvl3');
@@ -147,7 +180,7 @@ export default {
             })
         },
         scoreChart(){  
-            let data = "http://localhost:8080/data/dailyStats.csv";
+            let data = "data/dailyStats.csv";
 
             this.$papa.parse(data, {
                 header: true,

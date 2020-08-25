@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-	<Home/>
+	<router-view/>
   </div>
 </template>
 
@@ -9,9 +9,9 @@ import Home from '@/components/Home'
 
 export default {
   name: 'App',
-  components: {
-    Home
-  },
+  // components: {
+  //   Home
+  // },
   // data() {
   //   return{
 	//   lvl2Monsters: null,
