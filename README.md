@@ -1,4 +1,9 @@
-# vue-pak
+# [PAk] The Royal Warriors Hunting Reports (Lords Mobile)
+
+Hunting report data stays in `/public/data` folder in CSV format. `todaysHistory.csv` contains the most recent hunting update, while old files are moved to `/public/data/history` with date as filename. `totalsForCharts.csv` contains overall total stats for each day which is displayed inside charts.
+
+Demo: [https://royalwarriors.ml](https://royalwarriors.ml)
+
 
 ## Project setup
 ```
@@ -14,6 +19,3 @@ npm run serve
 ```
 npm run build
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
