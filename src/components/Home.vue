@@ -55,7 +55,7 @@
                     <div>
                         <input class="w-full border border-gray-400 px-4 py-2 mb-2" type="text" v-model="search" placeholder="Filter Data by Player Name">
                     </div>
-                    <VueTabulator id="usersData" v-model="filteredUsers" :options="options" />
+                    <VueTabulator v-model="filteredPlayers" :options="options" />
                 </div>
 
                 <div v-else>
@@ -279,7 +279,7 @@ export default {
         }
     },
     computed: {
-        filteredUsers() {
+        filteredPlayers() {
             return this.tabledata.filter((name) => {
                 return name.name.toLowerCase().match(this.search.toLowerCase())
             })
