@@ -22,7 +22,7 @@
                     <canvas id="compareChart"></canvas>
                 </div>
 
-                <div class="w-full p-3 md:p-10 md:p-10 shadow-xl rounded-lg mt-10">
+                <div class="w-full p-3 md:p-10 shadow-xl rounded-lg mt-10">
                     <h2 class="text-center mb-3 text-2xl font-heading font-bold">Hunting Kills History</h2>
                     <canvas id="dailyChart"></canvas>
                 </div>
@@ -131,7 +131,7 @@ export default {
 
         // Get files from History folder
         const files = require.context(
-        '@/data/history',
+        '../../public/data/history',
         true,
         /^.*\.csv$/
         )
@@ -139,14 +139,14 @@ export default {
         this.files = files.keys().map( (file) => {
             return file.substring(2, file.length - 4);
         })
-        //console.log(this.files)
+        console.log(this.files)
     },
     methods: {
         score(value, data, type, params, component){
             return data.lvl2 * 5 + data.lvl3 * 20; //return the sum of the other two columns.
         },
         playersTable() {
-            let monsters = "data/todayStats.csv";
+            let monsters = "/data/todayStats.csv";
             this.$papa.parse(monsters, {
                 header: true,
                 download: true,
@@ -196,7 +196,7 @@ export default {
             })
         },
         scoreChart(){  
-            let data = "data/dailyStats.csv";
+            let data = "/data/dailyStats.csv";
 
             this.$papa.parse(data, {
                 header: true,
