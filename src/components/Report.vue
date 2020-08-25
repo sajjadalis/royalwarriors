@@ -67,7 +67,6 @@ export default {
             zeroKill: '',
             oneKill: '',
             tabledata: [],
-            autoNumFormatter: null,
             search: '',
             options: {
                 layout:"fitColumns",
@@ -89,20 +88,8 @@ export default {
             }
         }
     },
-    created() {
-        this.playersTable();
-    },
     mounted() {
-        this.autoNumFormatter = function(){
-            return document.getElementsByClassName("tabulator-row").length + 1;
-        }
-
-        const illustrations = require.context(
-        '@/data',
-        true,
-        /^.*\.csv$/
-        )
-        console.log(illustrations.keys())
+         this.playersTable();
     },
     methods: {
         score(value, data, type, params, component){
@@ -134,12 +121,6 @@ export default {
                     
                 }
             })
-        },
-        sum(items, prop){
-            return items.reduce( function(a, b)
-            {
-                return a + b[prop];
-            }, 0);
         }
     },
     computed: {

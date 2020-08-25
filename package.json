@@ -1,11 +1,10 @@
 {
-  "name": "vue-pak",
+  "name": "royalwarriors.ml",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "css": "npx tailwindcss build ./src/assets/style.css -o ./public/assets/style.css"
+    "build": "vue-cli-service build"
   },
   "dependencies": {
     "chart.js": "^2.9.3",

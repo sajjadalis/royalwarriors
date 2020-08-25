@@ -99,7 +99,6 @@ export default {
             zeroKill: '',
             oneKill: '',
             tabledata: [],
-            autoNumFormatter: null,
             search: '',
             options: {
                 layout:"fitColumns",
@@ -121,26 +120,22 @@ export default {
             }
         }
     },
-    created() {
+    mounted() {
+
         this.playersTable();
         this.scoreChart();
-    },
-    mounted() {
-        this.autoNumFormatter = function(){
-            return document.getElementsByClassName("tabulator-row").length + 1;
-        }
 
-        // Get files from History folder
+        // Get CSV file names from /public/data/history folder
         const files = require.context(
         '../../public/data/history',
         true,
         /^.*\.csv$/
         )
-
+        // Map only filenames to new array byu removing extra characters
         this.files = files.keys().map( (file) => {
             return file.substring(2, file.length - 4);
         })
-        console.log(this.files)
+        //console.log(this.files)
     },
     methods: {
         score(value, data, type, params, component){
