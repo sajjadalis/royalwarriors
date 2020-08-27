@@ -6,6 +6,26 @@
             <h1 class="absolute top-0 left-0 font-heading font-bold text-xs md:text-3xl text-white mb-5 md:mb-10 leading-tight py-1 px-2 md:py-5 md:px-10 mt-2 md:mt-12 bg-black bg-opacity-75">The Royal Warriors Hunting Report for {{ today }}</h1>
         </div>
 
+        <div v-if="prompt" class="update-dialog">
+            <div class="update-dialog__content">
+                A new version is found. Refresh to load it?
+            </div>
+            <div class="update-dialog__actions">
+                <button
+                class="update-dialog__button update-dialog__button--confirm"
+                @click="update"
+                >
+                Update
+                </button>
+                <button
+                class="update-dialog__button update-dialog__button--cancel"
+                @click="prompt = false"
+                >
+                Cancel
+                </button>
+            </div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-5 md:gap-10">
 
             <div class="mt-10 md:mt-0 md:col-span-2 row-start-2 md:row-start-1">
@@ -92,7 +112,7 @@ import moment from 'moment'
 export default {
     data() {
         return {
-            loading: false,
+            prompt: false,
             files: '',
             today: '',
             leader: '',
@@ -120,6 +140,13 @@ export default {
             }
         }
     },
+    created() {
+        if (this.$workbox) {
+            this.$workbox.addEventListener("waiting", () => {
+                this.prompt = true;
+            });
+        }
+    },
     mounted() {
 
         this.playersTable();
@@ -138,6 +165,10 @@ export default {
         //console.log(this.files)
     },
     methods: {
+        async update() {
+            this.prompt = false;
+            await this.$workbox.messageSW({ type: "SKIP_WAITING" });
+        },
         score(value, data, type, params, component){
             return data.lvl2 * 5 + data.lvl3 * 20; //return the sum of the other two columns.
         },

@@ -50,3 +50,27 @@
 .tabulator .tabulator-tableHolder {
     overflow-x: hidden;
 }
+
+.update-dialog {
+    position: fixed;
+    left: 50%;
+    bottom: 64px;
+    transform: translateX(-50%);
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    padding: 12px;
+    max-width: 576px;
+    color: white;
+    background-color: #2c3e50;
+    text-align: left;
+    &__actions {
+      display: flex;
+      margin-top: 8px;
+    }
+    &__button {
+      margin-right: 8px;
+      &--confirm {
+        margin-left: auto;
+      }
+    }
+  }

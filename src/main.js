@@ -10,6 +10,9 @@ Vue.use(VuePapaParse)
 import VueTabulator from 'vue-tabulator';
 Vue.use(VueTabulator);
 
+import wb from "./registerServiceWorker";
+Vue.prototype.$workbox = wb;
+
 Vue.config.productionTip = false
 
 new Vue({
