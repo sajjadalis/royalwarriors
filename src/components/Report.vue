@@ -3,7 +3,7 @@
 
         <div class="relative">
             <img src="/assets/header.jpg" class="w-full h-auto mb-5 md:mb-10 rounded-b-lg">
-            <h1 class="absolute top-0 left-0 font-heading font-bold text-xs md:text-3xl text-white mb-5 md:mb-10 leading-tight py-1 px-2 md:py-5 md:px-10 mt-2 md:mt-12 bg-black bg-opacity-75">The Royal Warriors Hunting Report for {{ today }}</h1>
+            <h1 class="absolute top-0 left-0 font-heading font-bold text-xs md:text-3xl text-white mb-5 md:mb-10 leading-tight py-1 px-2 md:py-5 md:px-10 mt-2 md:mt-12 bg-black bg-opacity-75">[HL4]BOPOMOFO Hunting Report for {{ today }}</h1>
         </div>
 
         <a href="/" class="block p-4 text-center text-2xl font-heading font-bold bg-gray-300 hover:bg-gray-400 rounded-lg shadow-xl transition duration-500 ease-in-out">

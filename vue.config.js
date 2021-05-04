@@ -6,7 +6,7 @@ module.exports = {
       config
       .plugin('html')
       .tap(args => {
-        args[0].title = '[PAk] The Royal Warriors Hunting Report'
+        args[0].title = '[HL4] BOPOMOFO Hunting Report'
         return args
       })
     }
